@@ -12,7 +12,7 @@ interface IProps {
 
 const CheckBox: React.FC<IProps> = ({ id, label, isChecked, handleOnChange, isIcon }) => {
     return (
-        <div className='flex justify-between'>
+        <div className='flex justify-between my-1'>
             <div className="flex items-center space-x-2 w-full">
                 <Checkbox
                     id={id.toString()}

@@ -1,168 +1,13 @@
-import { ReactFlow, Controls, Background, Handle } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { ReactFlow, Controls, Background, Handle } from "@xyflow/react";
+import { dummyResponseData } from "@/lib/utils";
+import externalIcon from '/external-white.svg'
 
-const jsonData = [
-    {
-        function: "cart_router.py",
-        params: [
-            {
-                identifier: "request",
-                type: "Request",
-            },
-            {
-                identifier: "fastapi_response",
-                type: "Response",
-            },
-        ],
-        response_object: "add_item_to_cart",
-        children: [
-            {
-                function: "/litellm/proxy/proxy_server.py:ProxyConfig.load_team_config",
-                params: [
-                    {
-                        identifier: "self",
-                        type: null,
-                    },
-                    {
-                        identifier: "team_id",
-                        type: "str",
-                    },
-                ],
-                response_object: "",
-                children: [
-                    {
-                        function: "/litellm/proxy/proxy_server.py:ProxyConfig.get_config",
-                        params: [
-                            {
-                                identifier: "self",
-                                type: null,
-                            },
-                        ],
-                        response_object: "dict",
-                        children: [
-                            {
-                                function: "/litellm/proxy/utils.py:update_spend",
-                                params: [
-                                    {
-                                        identifier: "prisma_client",
-                                        type: "PrismaClient",
-                                    },
-                                    {
-                                        identifier: "db_writer_client",
-                                        type: "Optional[HTTPHandler]",
-                                    },
-                                    {
-                                        identifier: "proxy_logging_obj",
-                                        type: "ProxyLogging",
-                                    },
-                                ],
-                                response_object: "",
-                                children: [
-                                    {
-                                        function: "/litellm/proxy/utils.py:print_verbose",
-                                        params: [
-                                            {
-                                                identifier: "print_statement",
-                                                type: null,
-                                            },
-                                        ],
-                                        response_object: "",
-                                        children: [],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        function: "/litellm/proxy/utils.py:_is_valid_team_configs",
-                        params: [],
-                        response_object: "",
-                        children: [],
-                    },
-                    {
-                        function: "/litellm/proxy/utils.py:_is_valid_team_configs",
-                        params: [],
-                        response_object: "",
-                        children: [],
-                    },
-                ],
-            },
-            {
-                function: "/litellm/proxy/proxy_server.py:parse_cache_control",
-                params: [
-                    {
-                        identifier: "cache_control",
-                        type: null,
-                    },
-                ],
-                response_object: "",
-                children: [
-                    {
-                        function: "/litellm/proxy/proxy_server.py:ProxyConfig.get_config",
-                        params: [
-                            {
-                                identifier: "self",
-                                type: null,
-                            },
-                        ],
-                        response_object: "dict",
-                        children: [
-                            {
-                                function: "/litellm/proxy/utils.py:update_spend",
-                                params: [
-                                    {
-                                        identifier: "prisma_client",
-                                        type: "PrismaClient",
-                                    },
-                                    {
-                                        identifier: "db_writer_client",
-                                        type: "Optional[HTTPHandler]",
-                                    },
-                                    {
-                                        identifier: "proxy_logging_obj",
-                                        type: "ProxyLogging",
-                                    },
-                                ],
-                                response_object: "",
-                                children: [
-                                    {
-                                        function: "/litellm/proxy/utils.py:print_verbose",
-                                        params: [
-                                            {
-                                                identifier: "print_statement",
-                                                type: null,
-                                            },
-                                        ],
-                                        response_object: "",
-                                        children: [],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        function: "/litellm/proxy/utils.py:_is_valid_team_configs",
-                        params: [],
-                        response_object: "",
-                        children: [],
-                    },
-                    {
-                        function: "/litellm/proxy/utils.py:_is_valid_team_configs",
-                        params: [],
-                        response_object: "",
-                        children: [],
-                    },
-                ],
-            },
-        ],
-    },
-];
-
-// Recursively parse the JSON data and generate nodes and edges
+// method to recursively parse the data and generate nodes and edges
 const parseData = (data, parentId = null, x = 0, y = 0) => {
     const nodes = [];
     const edges = [];
-    let currentY = y; // Track the current y position
+    let currentY = y; // track current y position
 
     data.forEach((item, index) => {
         const nodeId = `${parentId || "root"}_${index}`; // unique ID for each node
@@ -173,12 +18,12 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
         // If the item has children, recursively add them with new X, Y
         if (item.children && item.children.length > 0) {
             // Recursively process children
-            const childData = parseData(item.children, nodeId, x + 300, currentY);
+            const childData = parseData(item.children, nodeId, x + 400, currentY);
             childNodes = childData.nodes;
             childEdges = childData.edges;
 
             // Calculate the total height of all child nodes
-            const totalHeight = (item.children.length - 1) * 150;
+            const totalHeight = (item.children.length - 1) * 160;
             const centerY = currentY + totalHeight / 2;
 
             nodes.push({
@@ -187,14 +32,24 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
                 data: {
                     label: (
                         <>
-                            <strong>{item.function}</strong>
-                            <ul>
-                                {item.params.map((param, idx) => (
-                                    <li key={idx}>
-                                        {param.identifier}: {param.type || "null"}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="border-b border-[#FFAD62] p-2 flex justify-between items-center">
+                                <div className="font-medium text-sm leading-4">{item.function}</div>
+                                <img src={externalIcon} alt="icon" />
+                            </div>
+                            <div className="p-2">
+
+                                <div className="my-2 font-medium text-sm leading-4">
+                                    {item.response_object}
+                                </div>
+
+                                <ul>
+                                    {item.params.map((param, idx) => (
+                                        <li key={idx} className="my-2 font-normal text-xs leading-3">
+                                            <span className="text-[#FFAD62]">{param.identifier}:</span> {param.type || "null"}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </>
                     ),
                     hasParent: !!parentId,
@@ -206,12 +61,12 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
             // Only connect parent to immediate children
             item.children.forEach((child, childIdx) => {
                 edges.push({
-                    id: `e_${nodeId}_${nodeId}_${childIdx}`,
+                    id: `e_${nodeId}_${childIdx}`,
                     source: nodeId,
                     target: `${nodeId}_${childIdx}`,
                     type: "default",
                     animated: false, // Solid line without animation
-                    style: { stroke: "#000", strokeWidth: 2 }, // Solid line
+                    style: { stroke: "#7C7C7C", strokeWidth: 2 }, // Solid line
                     markerEnd: {
                         type: "arrowclosed", // Arrow at the end
                     },
@@ -222,7 +77,7 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
             edges.push(...childEdges);
 
             // Update currentY to continue placing the next child node below
-            currentY += totalHeight + 150;
+            currentY += totalHeight + 250;
         } else {
             // No children, place the node at the current Y position
             nodes.push({
@@ -231,14 +86,24 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
                 data: {
                     label: (
                         <>
-                            <strong>{item.function}</strong>
-                            <ul>
-                                {item.params.map((param, idx) => (
-                                    <li key={idx}>
-                                        {param.identifier}: {param.type || "null"}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="border-b border-[#FFAD62] p-2 flex justify-between items-center">
+                                <div className="font-medium text-sm leading-4">{item.function}</div>
+                                <img src={externalIcon} alt="icon" />
+                            </div>
+                            <div className="p-2">
+
+                                <div className="my-2 font-medium text-sm leading-4">
+                                    {item.response_object}
+                                </div>
+
+                                <ul>
+                                    {item.params.map((param, idx) => (
+                                        <li key={idx} className="my-2 font-normal text-xs leading-3">
+                                            <span className="text-[#FFAD62]">{param.identifier}:</span> {param.type || "null"}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </>
                     ),
                     hasParent: !!parentId,
@@ -254,31 +119,30 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
                     target: nodeId,
                     type: "default",
                     animated: false,
-                    style: { stroke: "#000", strokeWidth: 2 },
+                    style: { stroke: "#7C7C7C", strokeWidth: 2 },
                     markerEnd: {
                         type: "arrowclosed",
                     },
                 });
             }
 
-            currentY += 150; // Increment currentY for next sibling node
+            currentY += 160; // Increment currentY for next sibling node
         }
     });
 
     return { nodes, edges };
 };
 
-// Custom Node Component
+// Custom Node Component to show dots on the nodes - show only connected ones
 const CustomNode = ({ data }) => {
     const { label, hasParent, hasChildren } = data;
 
     return (
         <div
             style={{
-                padding: 10,
-                border: "1px solid black",
-                borderRadius: 5,
-                width: 200,
+                border: "1px solid #FFAD62",
+                borderRadius: 4,
+                width: "100%",
             }}
         >
             {label}
@@ -297,14 +161,18 @@ const nodeTypes = {
 };
 
 const rfStyle = {
-    backgroundColor: "#363848",
+    backgroundColor: "#181E25",
 };
 
 const FlowCanvas = () => {
-    const { nodes, edges } = parseData(jsonData);
+
+    // Note: render dummy data
+    // call GET API to fetch the data from server - define a new state here to manage the response data
+
+    const { nodes, edges } = parseData(dummyResponseData);
 
     return (
-        <div style={{ height: "90vh", width: "100%", color: '#ffff' }}>
+        <div style={{ height: "100%", width: "100%", color: '#ffff' }}>
             <ReactFlow
                 nodeTypes={nodeTypes}
                 nodes={nodes}
@@ -312,7 +180,7 @@ const FlowCanvas = () => {
                 fitView
                 style={rfStyle}
             >
-                <Controls />
+                <Controls className="text-[#181E25]" />
                 <Background />
             </ReactFlow>
         </div>

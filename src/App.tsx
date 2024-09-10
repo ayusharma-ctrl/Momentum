@@ -1,24 +1,24 @@
-import Canvas from "./components/Canvas"
 import Header from "./components/Header"
 import LeftSideBar from "./components/LeftSideBar"
+import FlowCanvas from "./components/FlowCanvas"
 import RightSideBar from "./components/RightSideBar"
 
 function App() {
 
-
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen max-h-screen flex flex-col">
       <header>
         <Header />
       </header>
 
-      <main className="flex-grow">
-        <div className="grid grid-cols-[max-content_5fr_1fr] gap-2 h-full">
+      <main className="flex-grow overflow-y-hidden hidden lg:block">
+        <div className="grid grid-cols-[max-content_5fr_1fr] h-full">
           <LeftSideBar />
-          <Canvas />
+          <FlowCanvas />
           <RightSideBar />
         </div>
       </main>
+      
     </div>
   )
 }
