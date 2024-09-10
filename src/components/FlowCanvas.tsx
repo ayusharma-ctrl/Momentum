@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "@xyflow/react/dist/style.css";
-import { ReactFlow, Controls, Background, Handle } from "@xyflow/react";
+import { ReactFlow, Controls, Background, Handle, Position } from "@xyflow/react";
 import { dummyResponseData } from "@/lib/utils";
 import externalIcon from '/external-white.svg'
 
 // method to recursively parse the data and generate nodes and edges
-const parseData = (data, parentId = null, x = 0, y = 0) => {
-    const nodes = [];
-    const edges = [];
+const parseData = (data: any[], parentId: any = null, x = 0, y = 0) => {
+    const nodes: any[] = [];
+    const edges: any[] = [];
     let currentY = y; // track current y position
 
     data.forEach((item, index) => {
@@ -43,7 +44,7 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
                                 </div>
 
                                 <ul>
-                                    {item.params.map((param, idx) => (
+                                    {item.params.map((param: any, idx: number) => (
                                         <li key={idx} className="my-2 font-normal text-xs leading-3">
                                             <span className="text-[#FFAD62]">{param.identifier}:</span> {param.type || "null"}
                                         </li>
@@ -59,7 +60,7 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
             });
 
             // Only connect parent to immediate children
-            item.children.forEach((child, childIdx) => {
+            item.children.forEach((_child: any, childIdx: number) => {
                 edges.push({
                     id: `e_${nodeId}_${childIdx}`,
                     source: nodeId,
@@ -97,7 +98,7 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
                                 </div>
 
                                 <ul>
-                                    {item.params.map((param, idx) => (
+                                    {item.params.map((param: any, idx: number) => (
                                         <li key={idx} className="my-2 font-normal text-xs leading-3">
                                             <span className="text-[#FFAD62]">{param.identifier}:</span> {param.type || "null"}
                                         </li>
@@ -134,7 +135,7 @@ const parseData = (data, parentId = null, x = 0, y = 0) => {
 };
 
 // Custom Node Component to show dots on the nodes - show only connected ones
-const CustomNode = ({ data }) => {
+const CustomNode = ({ data }: { data: any }) => {
     const { label, hasParent, hasChildren } = data;
 
     return (
@@ -147,10 +148,10 @@ const CustomNode = ({ data }) => {
         >
             {label}
             {hasParent && (
-                <Handle type="target" position="left" style={{ background: "#555" }} />
+                <Handle type="target" position={Position.Left} style={{ background: "#555" }} />
             )}
             {hasChildren && (
-                <Handle type="source" position="right" style={{ background: "#555" }} />
+                <Handle type="source" position={Position.Right} style={{ background: "#555" }} />
             )}
         </div>
     );
